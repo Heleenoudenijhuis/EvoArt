@@ -1,0 +1,38 @@
+import csv
+import os
+import bpy
+
+# add 3 empties programatically to be certain it works as a demo
+mt1 = bpy.data.objects.new('mt1', None)
+mt2 = bpy.data.objects.new('mt2', None)
+mt3 = bpy.data.objects.new('mt3', None)
+empties = [mt1, mt2, mt3] 
+for m in empties:
+    bpy.context.collection.objects.link(m)
+
+filename = 'movement2.csv'
+# directory = '/home/zeffii/Desktop'  # <-- if you have linux or osx
+directory = r'c:\Users\Tristan\Documents\Computational\Evolutionary computing'  # <-- if windows, the r is important
+# directory = 'c:/some/directory'  # <-- if windows (alternative)
+
+
+fullpath = os.path.join(directory, filename)
+
+with open(fullpath, 'r', newline='') as csvfile:
+    ofile = csv.reader(csvfile, delimiter=',')
+    next(ofile) # <-- skip the x,y,z header
+
+            
+    for line in ofile:
+        f, *pts = line
+
+        # these things are still strings (that's how they get stored in the file)
+        # here we recast them to integer and floats
+        frame_num = int(f)
+        fpts = [float(p) for p in pts]
+        coordinates = [fpts[0:3], fpts[3:6], fpts[6:9]]
+
+        bpy.context.scene.frame_set(frame_num)
+        for ob, position in zip(empties, coordinates):
+            ob.location = position
+            ob.keyframe_insert(data_path="location", index=-1)
