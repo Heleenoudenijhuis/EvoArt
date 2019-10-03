@@ -10,7 +10,7 @@ empties = [mt1, mt2, mt3]
 for m in empties:
     bpy.context.collection.objects.link(m)
 
-filename = 'movement2.csv'
+filename = 'movement.csv'
 # directory = '/home/zeffii/Desktop'  # <-- if you have linux or osx
 directory = r'c:\Users\Tristan\Documents\Computational\Evolutionary computing'  # <-- if windows, the r is important
 # directory = 'c:/some/directory'  # <-- if windows (alternative)
