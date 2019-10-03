@@ -1,0 +1,27 @@
+import bpy
+
+# create a square
+bpy.ops.mesh.primitive_plane_add(enter_editmode=False, location=(0, 0, 0))
+bpy.ops.transform.resize(value=(6, 6, 6))
+bpy.ops.object.editmode_toggle()
+bpy.ops.mesh.inset(thickness=0.05, depth=0)
+bpy.ops.mesh.delete(type='FACE')
+bpy.ops.object.editmode_toggle()
+
+# create a square
+bpy.ops.mesh.primitive_plane_add(enter_editmode=False, location=(0, 0, 0))
+bpy.ops.transform.resize(value=(6, 6, 6))
+bpy.ops.transform.rotate(value=1.0472)
+bpy.ops.object.editmode_toggle()
+bpy.ops.mesh.inset(thickness=0.05, depth=0)
+bpy.ops.mesh.delete(type='FACE')
+bpy.ops.object.editmode_toggle()
+
+# create a square
+bpy.ops.mesh.primitive_plane_add(enter_editmode=False, location=(0, 0, 0.1))
+bpy.ops.transform.resize(value=(6, 6, 6))
+bpy.ops.transform.rotate(value=2.0944)
+bpy.ops.object.editmode_toggle()
+bpy.ops.mesh.inset(thickness=0.05, depth=0)
+bpy.ops.mesh.delete(type='FACE')
+bpy.ops.object.editmode_toggle()
