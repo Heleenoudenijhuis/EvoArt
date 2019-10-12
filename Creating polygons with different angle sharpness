@@ -1,0 +1,110 @@
+import bpy
+
+# Create curve.
+bpy.ops.curve.primitive_bezier_circle_add(enter_editmode=True)
+bpy.ops.curve.subdivide(number_cuts=1)
+bpy.ops.object.mode_set(mode='OBJECT')
+curve = bpy.context.active_object
+
+# Acquire bezier points from spline.
+bez_points = curve.data.splines[0].bezier_points
+bez_len = len(bez_points)
+bez_range = range(0, bez_len, 1)
+
+# Find first and last frames of the scene.
+scene = bpy.context.scene
+first_frame = scene.frame_start
+last_frame = scene.frame_end
+
+# Find length of frame range.
+delta = last_frame - first_frame
+
+# '//' signifies integer division, as opposed to '/', which signifies
+# floating-point division. Due to the fence-posting, or off-by-one,
+# problem, 1 // 3 and 2 // 3 of the frame length are taken even though
+# the variables are named 'quarters'.
+quarter_frame = delta // 3
+three_quarters_frame = (2 * delta) // 3
+
+for i in bez_range:
+    curr_point = bez_points[i]
+    next_point = bez_points[(i + 1) % bez_len]
+
+    # Options for handle type include:
+    # ['FREE', 'VECTOR', 'ALIGNED', 'AUTO']
+    curr_point.handle_right_type = 'FREE'
+    next_point.handle_left_type = 'FREE'
+
+    # Copy the current and next anchor points. These are vector objects.
+    curr_anchor_point = curr_point.co.copy()
+    next_anchor_point = next_point.co.copy()
+
+    # Used for the first and last key frame.
+    summed_aps = curr_anchor_point + next_anchor_point
+
+    # Use for the three-quarters key frame.
+    diff_aps_01 = 0.3125 * (next_anchor_point - curr_anchor_point)
+    diff_aps_10 = 0.3125 * (curr_anchor_point - next_anchor_point)
+
+    # Set to first key frame.
+    scene.frame_set(first_frame)
+
+    # Calculate right handle (previous control point).
+    curr_point.handle_right = summed_aps.lerp(curr_anchor_point, 0.5)
+    curr_point.keyframe_insert(data_path='handle_right')
+
+    # Calculate left handle (next control point).
+    next_point.handle_left = summed_aps.lerp(next_anchor_point, 0.5)
+    next_point.keyframe_insert(data_path='handle_left')
+
+    # Set last key frame, which is the same as the first,
+    # so as to create a seamless animation loop.
+    scene.frame_set(last_frame)
+    curr_point.keyframe_insert(data_path='handle_right')
+    next_point.keyframe_insert(data_path='handle_left')
+
+    # Set to quarter key frame.
+    scene.frame_set(quarter_frame)
+
+    # Calculate right handle (previous control point).
+    curr_point.handle_right = curr_anchor_point.lerp(next_anchor_point, 0.25)
+    curr_point.keyframe_insert(data_path='handle_right')
+
+    # Calculate left handle (next control point).
+    next_point.handle_left = next_anchor_point.lerp(curr_anchor_point, 0.25)
+    next_point.keyframe_insert(data_path='handle_left')
+
+    # Set to three-quarters key frame.
+    scene.frame_set(three_quarters_frame)
+
+    # Calculate right handle (previous control point).
+    curr_point.handle_right = diff_aps_01.lerp(curr_anchor_point, 0.5)
+    curr_point.keyframe_insert(data_path='handle_right')
+
+    # Calculate left handle (next control point).
+    next_point.handle_left = diff_aps_10.lerp(next_anchor_point, 0.5)
+    next_point.keyframe_insert(data_path='handle_left')
+
+# Return to beginning frame.
+scene.frame_current = scene.frame_start
+
+# Set rendering of curve.
+
+# Return to object mode.
+bpy.ops.object.mode_set(mode='OBJECT')
+
+# Store a shortcut to the curve object's data.
+obj_data = bpy.context.active_object.data
+
+# Which parts of the curve to extrude ['HALF', 'FRONT', 'BACK', 'FULL'].
+obj_data.fill_mode = 'FULL'
+
+# Breadth of extrusion.
+obj_data.extrude = 0.125
+
+# Depth of extrusion.
+obj_data.bevel_depth = 0.125
+
+# Smoothness of the segments on the curve.
+obj_data.resolution_u = 20
+obj_data.render_resolution_u = 32
