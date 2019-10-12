@@ -6,3 +6,4 @@ Basic scripts for:
 - mathematical formulas
 - creating shapes
 - creating fractal trees in blender
+- creating polygons with different angle sharpness
