@@ -1,0 +1,1214 @@
+
+############################# Import packages and libraries #############################################################################################################################################
+
+import bpy
+from bpy import context, data, ops
+import math
+import numpy as np
+import random
+from math import radians
+import colorsys
+from pynput.keyboard import Key, Listener
+import os
+import pynput
+
+
+
+
+
+
+
+
+######################################## Importing the genes #########################################################################################################################################################
+
+#Only usable in combination with Pycharm script
+os.chdir("C:\\Users\Gebruiker\PycharmProjects\EvoArt")
+
+#05-11-2019 by Jim Termeulen for VU Amsterdam EvoArt.
+#This script will take input from the file called objectinfo.txt and use the information in this file to
+#generate objects into blender using the bpy package. The script is suposed to be acessed inside the blender python console
+
+#the script "evoart_mainV2.py" takes care of mutation, evolution and the object transformation.
+def int_round_float(info):
+    return int(round(float(info)))
+
+def translate_information(line):
+    location_x = int(line[0])
+    location_y = int(line[1])
+    location_z = int(line[2])
+    parameter = float(line[3])
+    mesh_type = int_round_float(line[4])
+    mesh_size = float(line[5])
+    mesh_length = float(line[6])
+    mesh_length_y = float(line[7])
+    segments = float(line[8])
+    number = float(line[9])
+    number2 = float(line[10])
+    color_scheme = int_round_float(line[11])
+    color_variation = float(line[12])
+    color_h = float(line[13])
+    color_s = float(line[14])
+    color_v = float(line[15])
+    color_a = float(line[16])
+    sigma = 1.0
+    return  location_x, location_y, location_z, parameter, mesh_type, mesh_size, mesh_length, mesh_length_y, segments, number, number2, color_scheme, color_variation, color_h, color_s, color_v, color_a
+
+
+
+
+
+
+
+############################# Delete all objects in the scene #############################################################################################################################################
+
+col = bpy.data.collections.get("Scene Collection")
+if col:
+   for obj in col.objects:
+       obj.hide_set(False)
+
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.delete(use_global=False, confirm=False)
+for item in bpy.data.meshes:
+  bpy.data.meshes.remove(item)
+for item in bpy.data.particles:
+  bpy.data.particles.remove(item)
+
+
+
+
+
+
+############################# Delete all materials in the scene ############################################################################################################################################
+
+#def material_setup(input):
+for ob in bpy.context.selected_editable_objects:
+    ob.active_material_index = 0
+    for i in range(len(ob.material_slots)):
+        bpy.ops.object.material_slot_remove({'object': ob})
+
+
+
+
+
+
+
+############################# #Set-up of materials ############################################################################################################################################
+
+mat1 = bpy.data.materials.get("Material1")
+mat2 = bpy.data.materials.get("Material2")
+mat3 = bpy.data.materials.get("Material3")
+mat4 = bpy.data.materials.get("Material4")
+mat5 = bpy.data.materials.get("Material5")
+mat6 = bpy.data.materials.get("Material6")
+mat7 = bpy.data.materials.get("Material7")
+mat8 = bpy.data.materials.get("Material8")
+mat9 = bpy.data.materials.get("Material9")
+mat10 = bpy.data.materials.get("Material10")
+mat11 = bpy.data.materials.get("Material11")
+mat12 = bpy.data.materials.get("Material12")
+mat13 = bpy.data.materials.get("Material13")
+mat14 = bpy.data.materials.get("Material12")
+mat15 = bpy.data.materials.get("Material13")
+mat16 = bpy.data.materials.get("Material12")
+
+if mat1 is None:
+    # create material
+    mat1 = bpy.data.materials.new(name="Material1")
+if mat2 is None:
+    # create material
+    mat2 = bpy.data.materials.new(name="Material2") 
+if mat3 is None:
+    # create material
+    mat3 = bpy.data.materials.new(name="Material3")
+if mat4 is None:
+    # create material
+    mat4 = bpy.data.materials.new(name="Material4")
+if mat5 is None:
+    # create material
+    mat5 = bpy.data.materials.new(name="Material5")
+if mat6 is None:
+    # create material
+    mat6 = bpy.data.materials.new(name="Material6")
+if mat7 is None:
+    # create material
+    mat7 = bpy.data.materials.new(name="Material7")
+if mat8 is None:
+    # create material
+    mat8 = bpy.data.materials.new(name="Material8")
+if mat9 is None:
+    # create material
+    mat9 = bpy.data.materials.new(name="Material9")
+if mat10 is None:
+    # create material
+    mat10 = bpy.data.materials.new(name="Material10")
+if mat11 is None:
+    # create material
+    mat11 = bpy.data.materials.new(name="Material11")
+if mat12 is None:
+    # create material
+    mat12 = bpy.data.materials.new(name="Material12")   
+if mat13 is None:
+    # create material
+    mat13 = bpy.data.materials.new(name="Material13")
+if mat14 is None:
+    # create material
+    mat14 = bpy.data.materials.new(name="Material14")
+if mat15 is None:
+    # create material
+    mat15 = bpy.data.materials.new(name="Material15")
+if mat16 is None:
+    # create material
+    mat16 = bpy.data.materials.new(name="Material16")
+
+
+
+
+
+
+
+
+
+####################################### Set-up of textures ###############################################################################################################################################
+
+#Set-up of textures
+tex1 = bpy.data.textures.get("TEXTURE1")
+tex2 = bpy.data.textures.get("TEXTURE2")
+tex3 = bpy.data.textures.get("TEXTURE3")
+tex4 = bpy.data.textures.get("TEXTURE4")
+if tex1 is None:
+    tex1 = bpy.data.textures.new("TEXTURE1", 'IMAGE')
+if tex2 is None:
+    tex = bpy.data.textures.new("TEXTURE2", 'IMAGE')
+if tex3 is None:
+    tex = bpy.data.textures.new("TEXTURE3", 'IMAGE')
+if tex4 is None:
+    tex = bpy.data.textures.new("TEXTURE4", 'IMAGE')
+
+
+
+
+
+
+
+
+####################################### Set-up of lists ###############################################################################################################################################
+
+#Set-up of lists  
+colors = [mat1, mat2, mat3, mat4, mat5, mat6, mat7, mat8, mat9, mat10, mat11, mat12, mat13, mat14, mat15, mat16]    
+color_name = ["mat1","mat2","mat3","mat4","mat5","mat6", "mat7", "mat8", "mat9", "mat10", "mat11", "mat12", "mat13", "mat14", "mat15", "mat16"]
+angle_axis = ['X','Y','Z']
+name_system = ["system1","system2","system3","system4","system5","system6","system7","system8"]
+name_fractal = ["fractal_final1", "fractal_final2","fractal_final3","fractal_final4"]
+name_fractal2 = ['fractal_final1', 'fractal_final2','fractal_final3','fractal_final4']
+textures = [tex1, tex2, tex3, tex4]
+textures_name = ["TEXTURE1","TEXTURE2","TEXTURE3","TEXTURE4"]
+pattern_list = ['BLEND','CLOUDS','MAGIC','MARBLE','MUSGRAVE','NOISE','STUCCI','VORONOI','WOOD']
+shapes_name = ["shape1","shape2","shape3","shape4"]
+
+
+
+
+
+
+
+
+####################################### General modifiers ###############################################################################################################################################
+
+#Basic shape creator
+def standard_mesh(mesh_type):
+    if mesh_type == 0:
+        bpy.ops.mesh.primitive_cube_add(enter_editmode=False, location=(0, 0, 0))
+    if mesh_type == 1:
+        bpy.ops.mesh.primitive_ico_sphere_add(enter_editmode=False, location=(0, 0, 0))
+    if mesh_type == 2:
+        bpy.ops.mesh.primitive_cylinder_add(radius=1, depth=2, enter_editmode=False, location=(0, 0, 0))
+    if mesh_type == 3:
+        bpy.ops.mesh.primitive_torus_add(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), major_segments=3, major_radius=1, minor_radius=0.25, abso_major_rad=1.25, abso_minor_rad=0.75)
+    if mesh_type == 4:
+        bpy.ops.mesh.primitive_torus_add(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), major_segments=4, major_radius=1, minor_radius=0.25, abso_major_rad=1.25, abso_minor_rad=0.75)
+    if mesh_type == 5:
+        bpy.ops.mesh.primitive_torus_add(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), major_radius=1, minor_radius=0.25, abso_major_rad=1.25, abso_minor_rad=0.75)
+    if mesh_type == 6:
+        bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=0, depth=2, enter_editmode=False, location=(0, 0, 0))
+    if mesh_type == 7:
+        bpy.ops.mesh.primitive_monkey_add(size=2, enter_editmode=False, location=(0, 0, 0))
+        bpy.ops.transform.rotate(value=3.14159, orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+
+
+
+#Displace modifier
+def displace(pattern, contrast, run):
+    ob = bpy.context.active_object
+    bpy.ops.object.modifier_add(type='SUBSURF')
+
+    if ob.data.materials:
+        # assign to 1st material slot
+        ob.data.materials[0] = colors[12 + run]
+    else:
+        # no slots
+        ob.data.materials.append(colors[12 + run])
+        
+    mod = ob.modifiers.new(name="DISPLACE", type="DISPLACE")
+    mod.texture = textures[run]
+    bpy.data.textures[textures_name[run]].type = pattern
+    bpy.context.object.modifiers["Subdivision"].levels = 4
+    bpy.data.textures[textures_name[run]].contrast = contrast
+
+
+#Wireframe modifier
+def wireframe(thickness, mode):
+    ob = bpy.context.active_object
+    bpy.ops.object.modifier_add(type='WIREFRAME')
+    
+    if mode != 0:
+        bpy.ops.object.modifier_add(type='SUBSURF')
+    if mode == 2:
+        bpy.ops.object.modifier_move_up(modifier="Wireframe")
+    if mode >= 3:
+        bpy.ops.object.modifier_add(type='BEVEL')
+        bpy.ops.object.modifier_move_up(modifier="Bevel")
+        bpy.ops.object.modifier_move_up(modifier="Bevel")
+        bpy.ops.object.modifier_move_down(modifier="Subdivision")
+    if mode == 4:
+        bpy.context.object.modifiers["Bevel"].use_only_vertices = False
+        
+    bpy.context.object.modifiers["Wireframe"].thickness = thickness
+    bpy.context.object.modifiers["Wireframe"].use_replace = False
+    bpy.context.object.modifiers["Wireframe"].material_offset = 1
+    bpy.context.object.modifiers["Wireframe"].use_relative_offset = True
+
+
+#Tessellate modifier
+def tessellate(style, location_x, location_y):
+    for obj in bpy.context.selected_objects:
+        obj.name = "Shape"
+    if style == 0:
+        bpy.ops.mesh.primitive_torus_add(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), major_radius=1, minor_radius=0.25, abso_major_rad=1.25, abso_minor_rad=0.75) 
+    elif style == 1:
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=1, enter_editmode=False, location=(0, 0, 0))
+    elif style == 2:
+        bpy.ops.mesh.primitive_cube_add(size=2, enter_editmode=False, location=(0, 0, 0))
+    else:
+        bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=0, depth=2, enter_editmode=False, location=(0, 0, 0))
+    
+    for obj in bpy.context.selected_objects:
+        obj.name = "Tessellate"
+    bpy.ops.object.tissue_tessellate(object_name="Tessellation", gen_modifiers=False, com_modifiers=False, generator="Shape", component="Tessellate")
+    bpy.ops.transform.translate(value=(location_x, location_y, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    bpy.ops.transform.resize(value=(8.16151, 8.16151, 8.16151), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    #bpy.data.objects['Tessellate'].select_set(False)
+    #bpy.data.objects['Shape'].select_set(True)
+    #bpy.ops.object.delete(use_global=False, confirm=False)
+
+
+
+
+
+
+
+
+############################################# EvoArt modifiers ###############################################################################################
+
+############################################# Mandala modifier ########################################################################################################################
+
+#Mandala modifier
+def mandala_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+color_variation, color_h, color_s, color_v, color_a):
+    
+    #Changing the parameters
+    number_shapes = round((parameter*7) + 2)
+    mesh_elongate_x = mesh_length/2 + 1
+    if mesh_elongate_x < 1:
+        mesh_elongate_x = round(mesh_elongate_x)
+    mesh_elongate_y = mesh_length_y/5
+    sigma_mandala = segments/5
+    angle = number * 36
+    height = number2/10
+    angle_axis_mandala = 'X'
+        
+    #Generating the shapes
+    for i in range(round(number_shapes)):
+        bpy.ops.curve.primitive_bezier_circle_add(radius=1, enter_editmode=True, location=(location_x, location_y, 0))
+        bpy.ops.transform.translate(value=(0, 0, i*height), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(10 - 10/number_shapes*i, 10 - 10/number_shapes*i, 10 - 10/number_shapes*i), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        ops.curve.subdivide(number_cuts=4)
+        ops.object.mode_set(mode='OBJECT')
+        curve = context.active_object
+
+        #Create object that will be projected on to the curve.
+        mesh_type = round(mesh_type + sigma_mandala)
+        if mesh_type > 7:
+            mesh_type = 0
+        standard_mesh(mesh_type)
+        bpy.ops.transform.translate(value=(location_x, location_y, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(angle), orient_axis=angle_axis_mandala, orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(- mesh_size, - mesh_size, - mesh_size), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(mesh_elongate_x, mesh_elongate_y, 1), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        ops.object.shade_smooth()
+        mandala = context.active_object
+        
+        #Color assignment
+        color1 =color_h
+        if color_scheme > 4:
+            color_scheme2 = color_scheme - 4
+        else:
+            color_scheme2 = color_scheme
+        if color_scheme2 == 0:
+            color2 = color1 + color_variation
+            color3 = color1 + (2* color_variation)
+        elif color_scheme2 == 1:
+            color2 = color1 + 0.1
+            color3 = color1 + 0.2
+        elif color_scheme2 == 2:
+            color2 = color1 + 0.2
+            color3 = color1 + 0.4
+        elif color_scheme2 == 3:
+            color2 = color1 + 0.3
+            color3 = color1 + 0.6
+        elif color_scheme2 == 4:
+            color2 = color1 + 0.5
+            color3 = color1 + color_variation
+        else:
+            color2 = color1 + random()
+            color3 = color1 + random()
+            
+        if color1 >= 1:
+            color1 = color1 - 1
+        if color2 >= 1:
+            color2 = color2 - 1
+        if color3 >= 1:
+            color3 = color3 - 1
+                
+        color_list = [color1, color2, color3]
+        if color_scheme <= 4:
+            if i <= 2:
+                mandala.data.materials.append(colors[i + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+            if i >= 3 and i <= 5:
+                mandala.data.materials.append(colors[i + (run*3) - 3])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -3], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+            if i >= 6 and i <= 8:
+                mandala.data.materials.append(colors[i + (run*3) - 6])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -6], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+            if i >= 9 and i <= 11:
+                mandala.data.materials.append(colors[i + (run*3) - 9])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -9], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+            if i >= 12 and i <= 14:
+                mandala.data.materials.append(colors[i + (run*3) - 12])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -12], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+                
+        elif color_scheme > 4:
+            if i <= 2:
+                mandala.data.materials.append(colors[0 + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+            if i >= 3 and i <= 5:
+                mandala.data.materials.append(colors[1 + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -3], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+            if i >= 6 and i <= 8:
+                mandala.data.materials.append(colors[2 + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -6], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+            if i >= 9 and i <= 11:
+                mandala.data.materials.append(colors[2 + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -9], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+            if i >= 12 and i <= 14:
+                mandala.data.materials.append(colors[0 + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[i -12], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+ 
+        #Append modifiers
+        array_mod = mandala.modifiers.new(name='Array', type='ARRAY')
+        curve_mod = mandala.modifiers.new(name='Curve', type='CURVE')
+        bevel_mod = mandala.modifiers.new(name='Bevel', type='BEVEL')
+        #Array modifier properties
+        array_mod.fit_type = 'FIT_CURVE'
+        array_mod.curve = curve
+        array_mod.use_relative_offset = True
+        array_mod.relative_offset_displace = (1.25, 0.0, 0.0)
+        #Curve modifier properties.
+        curve_mod.object = curve
+        curve_mod.deform_axis = 'POS_X'
+        #Bevel modifier properties.
+        bevel_mod.segments = 2
+        bevel_mod.offset_type = 'PERCENT'
+        bevel_mod.width = 10.0
+        
+        mandala = context.active_object
+        bpy.ops.object.convert(target='MESH')
+        bpy.ops.transform.resize(value=(0.694808, 0.694808, 0.694808), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        
+    #add_rotation(run)
+
+
+
+
+############################################# Fractal modifier ########################################################################################################################
+
+#Fractal modifier
+def fractal_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+color_variation, color_h, color_s, color_v, color_a):
+    
+    #Changing the parameters
+    scale = 1.3
+    segment_length = 5 + (mesh_length/10)
+    segment_scaling = 0.6 + (mesh_length/100)
+    number_shape = 1 + math.ceil(mesh_length_y/4)
+    angle = number * 18
+    angle_3shapes = number2 * 4
+    scale_objects = segments
+    repetition_shape = (parameter - 1) * 3
+    mode2 = round(segments/3)
+    #mode2 = 2
+    if mesh_length_y < 2:
+        number = 100
+    elif mesh_length_y < 5:
+        number = 500
+    else:
+        number = 1000
+    
+    #Color assignment
+    color1 =color_h
+    if color_scheme == 0:
+        color2 = color1 + color_variation
+        color3 = color1 + (2* color_variation)
+    elif color_scheme == 1:
+        color2 = color1 + 0.1
+        color3 = color1 + 0.2
+    elif color_scheme == 2:
+        color2 = color1 + 0.2
+        color3 = color1 + 0.4
+    elif color_scheme == 3:
+        color2 = color1 + 0.3
+        color3 = color1 + 0.6
+    elif color_scheme == 4:
+        color2 = color1 + 0.5
+        color3 = color1 + color_variation
+    else:
+        color2 = color1 + random()
+        color3 = color1 + random()
+
+    if color1 >= 1:
+        color1 = color1 - 1
+    if color2 >= 1:
+        color2 = color2 - 1
+    if color3 >= 1:
+        color3 = color3 - 1
+            
+    color_list = [color1, color2, color3]
+    
+
+    #Generating the shapes
+    for k in range(number_shape): 
+        scale = scale - k*0.05
+        segment_length = segment_length - k*0.1
+        segment_scaling = segment_scaling - k* 0.01
+        angle = angle + 10*k
+        
+        for i in range(4):
+            #Creating a drawable mesh
+            bpy.ops.mesh.primitive_cube_add(size=2, enter_editmode=False, location=(0, 0, 0))
+            bpy.ops.object.editmode_toggle()
+            bpy.ops.mesh.merge(type='CENTER')
+            bpy.ops.object.modifier_add(type='SKIN')
+            bpy.ops.object.editmode_toggle()
+            bpy.ops.object.subdivision_set(level=2, relative=False)
+            bpy.ops.wm.tool_set_by_id(name="builtin.shear")
+            bpy.ops.object.editmode_toggle()
+
+            #Fractal function
+            def fractaltree(angle, angle2, length, scaling_step):
+                x = length * np.sin(radians(angle))
+                z = length * np.cos(radians(angle))
+                bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(x, 0, z), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})    
+                if length > 2:
+                    fractaltree(angle + angle2, angle2, length * scaling_step, scaling_step)
+                    fractaltree(angle + angle2, angle2, - length * scaling_step, scaling_step)
+                    fractaltree(angle - angle2, angle2, length * scaling_step, scaling_step)
+                    fractaltree(angle - angle2, angle2,  - length * scaling_step, scaling_step)
+               
+            #Calling fractal function
+            angle_add = angle
+            fractaltree(angle, angle_add, segment_length, segment_scaling)
+            
+            #Going back to edit mode
+            bpy.ops.object.editmode_toggle()
+            #bpy.ops.transform.rotate(value=0.785398, orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.transform.rotate(value=1.5708 * i, orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.transform.rotate(value=1.5708, orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.transform.resize(value=(scale, scale, scale), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.transform.resize(value=(0.818715, 0.818715, 0.818715), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.context.active_object.name = 'Fractal'
+
+        #Joining the separate branches
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.data.objects['Fractal'].select_set(True)
+        bpy.data.objects['Fractal.001'].select_set(True)
+        bpy.data.objects['Fractal.002'].select_set(True)
+        bpy.data.objects['Fractal.003'].select_set(True)
+        bpy.ops.object.join()
+        bpy.ops.transform.translate(value=(location_x, location_y, k*0.5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        
+        
+        #Repeat the process
+        fractal = context.active_object  
+        bpy.context.active_object.name = 'fractal'
+        if repetition_shape > 0:
+            bpy.ops.object.duplicate()
+            bpy.ops.transform.rotate(value=0.785398, orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects['fractal'].select_set(True)
+            bpy.data.objects['fractal.001'].select_set(True)
+            bpy.ops.object.join()
+            fractal = context.active_object  
+            bpy.context.active_object.name = 'fractal'
+            
+            if mode2 == 1:
+                    
+                bpy.ops.object.convert(target='MESH')
+                standard_mesh(mesh_type)
+                bpy.ops.transform.resize(value=(scale_objects, scale_objects, scale_objects), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+                bpy.ops.transform.translate(value=(200, 0, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+                cube = context.active_object
+
+                cube.data.materials.append(colors[2 + (run*3)])
+                color_rgb = colorsys.hsv_to_rgb(color_list[2], color_s, color_v)
+                bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+
+                bpy.ops.object.select_all(action='DESELECT') # Deselect all objects     
+                bpy.context.view_layer.objects.active = fractal # Make the cube the active object 
+                
+
+                        
+                bpy.ops.object.particle_system_add()
+                bpy.context.object.particle_systems["ParticleSettings"].name = name_system[run*2]
+                bpy.data.particles["ParticleSettings"].name = name_system[run*2]
+                bpy.data.particles[name_system[run*2]].type = 'HAIR'
+                bpy.data.particles[name_system[run*2]].use_advanced_hair = True
+                bpy.data.particles[name_system[run*2]].render_type = 'OBJECT'
+                bpy.data.particles[name_system[run*2]].instance_object = cube
+                bpy.data.particles[name_system[run*2]].count = number
+                           
+        if repetition_shape >= 2:
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects['fractal'].select_set(True)
+            bpy.ops.object.duplicate()
+            bpy.ops.transform.rotate(value=radians(angle_3shapes), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects['fractal'].select_set(True)
+            bpy.data.objects['fractal.001'].select_set(True)  
+            bpy.ops.object.join()
+            fractal = context.active_object  
+            bpy.context.active_object.name = 'fractal'
+            
+        if repetition_shape == 3:
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects['fractal'].select_set(True)
+            bpy.ops.object.duplicate()
+            bpy.ops.transform.rotate(value=radians(22.5), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects['fractal'].select_set(True)
+            bpy.ops.object.duplicate()
+            bpy.ops.transform.rotate(value=radians(67.5), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.data.objects['fractal'].select_set(True)
+            bpy.data.objects['fractal.001'].select_set(True)  
+            bpy.data.objects['fractal.002'].select_set(True)  
+            bpy.ops.object.join()
+
+            
+        fractal_final = context.active_object  
+        bpy.context.active_object.name = name_fractal2[run]
+        l = k
+        if l>2:
+            l = 0    
+        fractal_final.data.materials.append(colors[l + (run*3)])
+        color_rgb = colorsys.hsv_to_rgb(color_list[l], color_s, color_v)
+        bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+        bpy.ops.transform.translate(value=(0, 0, 5*k), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            
+        
+    #Adding meshes onto the fractal
+    if mode2 == 2:
+        bpy.ops.object.convert(target='MESH')
+        
+        #Create object that will be projected on to the fractal
+        standard_mesh(mesh_type)
+        bpy.ops.transform.resize(value=(scale_objects, scale_objects, scale_objects), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.translate(value=(200, 0, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        cube = context.active_object
+
+        cube.data.materials.append(colors[2 + (run*3)])
+        color_rgb = colorsys.hsv_to_rgb(color_list[2], color_s, color_v)
+        bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+        bpy.ops.object.select_all(action='DESELECT') # Deselect all objects     
+        bpy.context.view_layer.objects.active = fractal_final # Make the cube the active object 
+                
+        bpy.ops.object.particle_system_add()
+        bpy.context.object.particle_systems["ParticleSettings"].name = name_system[run*2]
+        bpy.data.particles["ParticleSettings"].name = name_system[run*2]
+        bpy.data.particles[name_system[run*2]].type = 'HAIR'
+        bpy.data.particles[name_system[run*2]].use_advanced_hair = True
+        bpy.data.particles[name_system[run*2]].render_type = 'OBJECT'
+        bpy.data.particles[name_system[run*2]].instance_object = cube
+        bpy.data.particles[name_system[run*2]].count = number
+        
+        bpy.ops.object.select_all(action='DESELECT') # Deselect all objects
+        #bpy.data.objects[name_fractal2[run]].select_set(True)
+        
+        #bpy.context.view_layer.objects.active = cube # Make the cube the active object 
+        #bpy.ops.transform.translate(value=(50, 0, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        
+    #add_rotation(run)
+        
+
+
+
+
+
+
+
+
+############################################# Fur modifier ########################################################################################################################
+
+#Fur modifier
+def fur_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+color_variation, color_h, color_s, color_v, color_a):
+    
+    #Changing the parameters
+    hair_length = 1 + ((parameter - 2) * 5)
+    scale_objects = 6 + ((parameter - 2) * 3)
+    scale_objects2 = 6 + ((parameter - 2) * 3)
+    #scale_objects = 1
+    hair_number = mesh_length * 100
+    number_fur = round(segments*2)
+    randomize = number/10
+    randomize2 = number2/10
+    addons = round(mesh_type / 7)
+    location_scale = round(mesh_length_y/3)
+
+    #Generating the shapes
+    standard_mesh(mesh_type)
+    #bpy.ops.transform.resize(value=(8.34041, 8.34041, 8.34041), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+    bpy.ops.transform.resize(value=(scale_objects, scale_objects, scale_objects), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    #bpy.ops.mesh.primitive_uv_sphere_add(radius=4, enter_editmode=False, location=(0, 0, 0))
+    bpy.ops.transform.translate(value=(location_x, location_y, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    bpy.ops.object.particle_system_add()
+    bpy.context.object.particle_systems["ParticleSettings"].name = name_system[run*2]
+    bpy.data.particles["ParticleSettings"].name = name_system[run*2]
+    bpy.data.particles[name_system[run*2]].type = 'HAIR'
+    bpy.data.particles[name_system[run*2]].use_advanced_hair = True
+    bpy.data.particles[name_system[run*2]].length_random = 0.901786
+    bpy.data.particles[name_system[run*2]].brownian_factor = 0.77
+    bpy.data.particles[name_system[run*2]].display_step = 7
+    bpy.data.particles[name_system[run*2]].child_type = 'INTERPOLATED'
+    bpy.data.particles[name_system[run*2]].clump_factor = 1
+    #bpy.data.particles[name_system[run*2]].child_nbr = 100
+
+    bpy.data.particles[name_system[run*2]].hair_length = 1
+    bpy.data.particles[name_system[run*2]].count = 1000
+    bpy.data.particles[name_system[run*2]].factor_random = randomize
+    furball = context.active_object
+    
+    #Creating object that will be projected on to the fractal
+    standard_mesh(mesh_type)
+    bpy.ops.transform.resize(value=(scale_objects2, scale_objects2, scale_objects2), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    bpy.ops.transform.translate(value=(200, 0, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    object = context.active_object
+    
+    #Color assignment
+    color1 =color_h
+    if color_scheme == 0:
+        color2 = color1 + color_variation
+        color3 = color1 + (2* color_variation)
+    elif color_scheme == 1:
+        color2 = color1 + 0.1
+        color3 = color1 + 0.2
+    elif color_scheme == 2:
+        color2 = color1 + 0.2
+        color3 = color1 + 0.4
+    elif color_scheme == 3:
+        color2 = color1 + 0.3
+        color3 = color1 + 0.6
+    elif color_scheme == 4:
+        color2 = color1 + 0.5
+        color3 = color1 + color_variation
+    else:
+        color2 = color1 + random()
+        color3 = color1 + random()
+        
+    if color1 >= 1:
+        color1 = color1 - 1
+    if color2 >= 1:
+        color2 = color2 - 1
+    if color3 >= 1:
+        color3 = color3 - 1
+            
+    color_list = [color1, color2, color3]
+      
+    object.data.materials.append(colors[0 + (run*3)])
+    color_rgb = colorsys.hsv_to_rgb(color_list[0], color_s, color_v)
+    bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+    #Hide the projection object and select the furball
+    #bpy.context.object.hide_viewport = True
+    bpy.ops.object.select_all(action='DESELECT') # Deselect all objects
+    bpy.context.view_layer.objects.active = furball   # Make the cube the active object 
+    
+    #Color assignment
+    furball.data.materials.append(colors[1 + (run*3)])
+    color_rgb = colorsys.hsv_to_rgb(color_list[1], color_s, color_v)
+    bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+
+
+    #Adding the second particle system
+    bpy.ops.object.particle_system_add()
+    bpy.context.object.particle_systems["ParticleSettings"].name = name_system[(run*2)+1]
+    bpy.data.particles["ParticleSettings"].name = name_system[(run*2)+1]
+    bpy.data.particles[name_system[(run*2)+1]].type = 'HAIR'
+    bpy.data.particles[name_system[(run*2)+1]].use_advanced_hair = True
+    bpy.data.particles[name_system[(run*2)+1]].render_type = 'OBJECT'
+    bpy.data.particles[name_system[(run*2)+1]].instance_object = object
+    bpy.data.particles[name_system[(run*2)+1]].factor_random = randomize2
+    bpy.data.particles[name_system[(run*2)+1]].count = hair_number
+
+
+    if addons == 1:
+        for i in range(number_fur):
+            x = random.randint(-8 + location_scale,8 - location_scale)
+            y = random.randint(-8 + location_scale,8 - location_scale)
+            z = random.randint(-8 + location_scale,8 - location_scale)
+            if hair_length >= 5:
+                hair_length = 5
+            
+            standard_mesh(mesh_type)
+            bpy.ops.transform.translate(value=(x+location_x, y+location_y, z), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            rotation_x = random.randint(0,90)
+            rotation_y = random.randint(0,90)
+            rotation_z = random.randint(0,90)
+            bpy.ops.transform.rotate(value=radians(rotation_x), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.transform.rotate(value=radians(rotation_y), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            bpy.ops.transform.rotate(value=radians(rotation_z), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            scale_x = random.random()*2
+            scale_y = random.random()*2
+            scale_z = random.random()*2
+            bpy.ops.transform.resize(value=(scale_x, scale_y, scale_z), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+            
+            #Color assignment
+            object = context.active_object
+            object.data.materials.append(colors[2 + (run*3)])
+            color_rgb = colorsys.hsv_to_rgb(color_list[2], color_s, color_v)
+            bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+    
+    #add_rotation(run)
+
+
+
+
+
+
+
+
+
+
+
+
+############################################# Math modifier ########################################################################################################################
+
+#Math modifier
+def math_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+color_variation, color_h, color_s, color_v, color_a):
+    
+    #Changing the parameters
+    shape = round((parameter - 4) * 11)
+    effect = (mesh_size - 1) *4
+    thickness = mesh_length * 5 / 100
+    mode = round(mesh_length_y/2) - 1
+    contrast = segments * 1.5/10
+    rotation = (number - 5) * 36
+    scale = number2/10
+    if scale <= 0.5:
+        scale = 0.5
+        
+    #Generating the shapes
+    if shape == 0:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="u", y_eq="cos(u)*sin(v)", z_eq="cos(u)*cos(v)", range_u_min=0, range_u_max=6.28319, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(3, 3, 3), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.translate(value=(-10, 0, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation/10), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 1:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="v*cos(u)", y_eq="v*sin(u)", z_eq="0.4*u", range_u_min=0, range_u_max=12.5664, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=2, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(3, 3, 3), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.translate(value=(0, 7.05441, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation/10), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 2:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="a*cos(u)*sin(v)", y_eq="a*sin(u)*sin(v)", z_eq="(cos(v)+log(tan(v/2)+1e-2)) + b*u", range_u_min=0, range_u_max=12.5664, range_u_step=128, wrap_u=False, range_v_min=0, range_v_max=2, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="1", b_eq="0.2", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(5, 5, 5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(0.743639, 0.743639, 0.743639), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 3:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="(1-0.1*cos(v))*cos(u)", y_eq="0.1*(sin(v) + u/1.7 -10)", z_eq="(1-0.1*cos(v))*sin(u)", range_u_min=0, range_u_max=12.5664, range_u_step=128, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(5, 5, 5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(1, 4.60466, 1), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.translate(value=(0, 14.3131, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation/10), orient_axis='Z', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 4:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="2/3* (cos(u)* cos(2*v) + sqrt(2)* sin(u)* cos(v))* cos(u) / (sqrt(2) - sin(2*u)* sin(3*v))", y_eq="sqrt(2)* cos(u)* cos(u) / (sqrt(2) - sin(2*u)* sin(3*v))", z_eq="2/3* (cos(u)* sin(2*v) - sqrt(2)* sin(u)* sin(v))* cos(u) / (sqrt(2) - sin(2*u)* sin(3*v))", range_u_min=0, range_u_max=3.14159, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=3.14159, range_v_step=64, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(5, 5, 5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 5:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="cos(u+v)/(sqrt(2.)+cos(v-u))", y_eq="sin(v-u)/(sqrt(2.)+cos(v-u))", z_eq="sin(u+v)/(sqrt(2.)+cos(v-u))", range_u_min=0, range_u_max=3.14, range_u_step=8, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(5, 5, 5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 6:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="sinh(v)*sin(u)", y_eq="3*u", z_eq="-sinh(v)*cos(u)", range_u_min=-3.14159, range_u_max=3.14159, range_u_step=32, wrap_u=False, range_v_min=-3.14159, range_v_max=3.14159, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(0.823371, 0.823371, 0.823371), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 7:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="(sinh(v)*cos(3*u))/(1+cosh(u)*cosh(v))", y_eq="(cosh(v)*sinh(u))/(1+cosh(u)*cosh(v))", z_eq="(sinh(v)*sin(3*u))/(1+cosh(u)*cosh(v))", range_u_min=-3.14159, range_u_max=3.14159, range_u_step=32, wrap_u=False, range_v_min=-3.14159, range_v_max=3.14159, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(10, 10, 10), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 8:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="2.2*(2*cosh(v/2)*cos(u)) ", y_eq="1.51166 * (2*cosh(v/2)*sin(u) * sin((2.2*(2*cosh(v/2)*cos(u)) - -11.0404)*2*pi*1/22.0513) + 1.8*(v) * cos((2.2*(2*cosh(v/2)*cos(u)) - -11.0404)*2*pi*1/22.0513)) ", z_eq="1.51166 * (2*cosh(v/2)*sin(u) * cos((2.2*(2*cosh(v/2)*cos(u)) - -11.0404)*2*pi*1/22.0513) - 1.8*(v) * sin((2.2*(2*cosh(v/2)*cos(u)) - -11.0404)*2*pi*1/22.0513)) ", range_u_min=-3.14159, range_u_max=3.14159, range_u_step=32, wrap_u=False, range_v_min=-3.14159, range_v_max=3.14159, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 9:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="cos(u)*cos(v)+sin((sin(u)+1)*2*pi) ", y_eq="4*sin(u) ", z_eq="cos(u)*sin(v)+cos((sin(u)+1)*2*pi) ", range_u_min=-1.5708, range_u_max=1.5708, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(2, 2, 2), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(1.4795, 1.4795, 1.4795), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 10:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="1.2*(1 -v/(2*pi))*cos(3*v)*(1 + cos(u)) + 3*cos(3*v)", y_eq="9*v/(2*pi) + 1.2*(1 - v/(2*pi))*sin(u)", z_eq="1.2*(1 -v/(2*pi))*sin(3*v)*(1 + cos(u)) + 3*sin(3*v)", range_u_min=0, range_u_max=6.28319, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=64, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(1.53689, 1.53689, 1.53689), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 11:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="cos(u)*(6-(5./4. + sin(3*v))*sin(v-3*u))", y_eq="(6-(5./4. + sin(3*v))*sin(v-3*u))*sin(u)", z_eq="-cos(v-3*u)*(5./4.+sin(3*v))", range_u_min=0, range_u_max=6.28319, range_u_step=128, wrap_u=True, range_v_min=0, range_v_max=6.28319, range_v_step=32, wrap_v=True, close_v=True, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(1.38036, 1.38036, 1.38036), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 12:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="2*cosh(v/2)*cos(u)", y_eq="v", z_eq="2*cosh(v/2)*sin(u)", range_u_min=-3.14159, range_u_max=3.14159, range_u_step=32, wrap_u=True, range_v_min=-3.14159, range_v_max=3.14159, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(2, 2, 2), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)    
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 13:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="u-sin(u)*cosh(v)", y_eq="4*sin(1/2*u)*sinh(v/2)", z_eq="1-cos(u)*cosh(v)", range_u_min=-3.14159, range_u_max=9.42478, range_u_step=32, wrap_u=False, range_v_min=-2, range_v_max=2, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(1.12, 1.1, 1.1), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 14:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="u -u**3/3  + u*v**2", y_eq="u**2 - v**2", z_eq="v -v**3/3  + v*u**2", range_u_min=-2, range_u_max=2, range_u_step=32, wrap_u=False, range_v_min=-2, range_v_max=2, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(1.31299, 1.31299, 1.31299), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 15:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="cos(v)**3*cos(u)**3", y_eq="sin(u)**3", z_eq="sin(v)**3*cos(u)**3", range_u_min=-1.3, range_u_max=1.3, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(10, 10, 10), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(1.22932, 1.22932, 1.22932), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 16:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="cos(v)+u*cos(v/2)*cos(v)", y_eq="u*sin(v/2)", z_eq="sin(v)+u*cos(v/2)*sin(v)", range_u_min=-0.4, range_u_max=0.4, range_u_step=32, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(10, 10, 10), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 17:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="a*cos(u)+(b*sin(f*u)+c)*cos(u)*cos(v)", y_eq="a*sin(u)+(b*sin(f*u)+c)*sin(u)*cos(v)", z_eq="(b*sin(f*u)+c)*sin(v)", range_u_min=0, range_u_max=6.28319, range_u_step=128, wrap_u=False, range_v_min=0, range_v_max=6.28319, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="5", b_eq="0.6", c_eq="2", f_eq="10", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(1.52487, 1.52487, 1.52487), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 18:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="2.*u/(u*u+v*v+1.)", y_eq="(u*u+v*v-1.)/(u*u+v*v+1.)", z_eq="2.*v/(u*u+v*v+1.)", range_u_min=-2, range_u_max=2, range_u_step=32, wrap_u=False, range_v_min=-2, range_v_max=2, range_v_step=32, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(10, 10, 10), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 19:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="u", y_eq="sin(pi*((u)**2+(v)**2))/2", z_eq="v", range_u_min=-1, range_u_max=1, range_u_step=32, wrap_u=False, range_v_min=-1, range_v_max=1, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(10, 10, 10), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 20:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="(3*(1+sin(v)) + 2*(1-cos(v)/2)*cos(u))*cos(v)", y_eq="(4+2*(1-cos(v)/2)*cos(u))*sin(v)", z_eq="-2*(1-cos(v)/2)*sin(u)", range_u_min=0, range_u_max=6.28319, range_u_step=32, wrap_u=True, range_v_min=0, range_v_max=6.28319, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(1.4977, 1.4977, 1.4977), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    elif shape == 21:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="cos(v)*(1+cos(u))*sin(v/8)", y_eq="sin(u)*sin(v/8)+cos(v/8)*1.5", z_eq="sin(v)*(1+cos(u))*sin(v/8)", range_u_min=0, range_u_max=6.28319, range_u_step=32, wrap_u=True, range_v_min=0, range_v_max=12.5664, range_v_step=128, wrap_v=False, close_v=False, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(5, 5, 5), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    else:
+        bpy.ops.mesh.primitive_xyz_function_surface(x_eq="sin(u)", y_eq="sin(v)", z_eq="sin(u+v)", range_u_min=0, range_u_max=6.28319, range_u_step=128, wrap_u=True, range_v_min=0, range_v_max=6.28319, range_v_step=128, wrap_v=True, close_v=True, n_eq=1, a_eq="0", b_eq="0", c_eq="0", f_eq="0", g_eq="0", h_eq="0")
+        bpy.ops.transform.resize(value=(8, 8, 8), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='Y', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.rotate(value=radians(rotation), orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+    #General transformations
+    bpy.ops.transform.translate(value=(location_x, location_y, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    scale += 0.5
+    bpy.ops.transform.resize(value=(scale + 0.2, scale, scale), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+    if effect != 2:
+        bpy.ops.object.modifier_add(type='DECIMATE')
+        bpy.context.object.modifiers["Decimate"].ratio = 0.3
+        bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Decimate")
+    math = context.active_object
+    
+    
+    #Color assignment
+    color1 =color_h
+    if color_scheme == 0:
+        color2 = color1 + color_variation
+        color3 = color1 + (2* color_variation)
+    elif color_scheme == 1:
+        color2 = color1 + 0.1
+        color3 = color1 + 0.2
+    elif color_scheme == 2:
+        color2 = color1 + 0.2
+        color3 = color1 + 0.4
+    elif color_scheme == 3:
+        color2 = color1 + 0.3
+        color3 = color1 + 0.6
+    elif color_scheme == 4:
+        color2 = color1 + 0.5
+        color3 = color1 + color_variation
+    else:
+        color2 = color1 + random()
+        color3 = color1 + random()
+        
+    if color1 >= 1:
+        color1 = color1 - 1
+    if color2 >= 1:
+        color2 = color2 - 1
+    if color3 >= 1:
+        color3 = color3 - 1
+            
+    color_list = [color1, color2, color3]
+
+    math.data.materials.append(colors[0 + (run*3)])
+    color_rgb = colorsys.hsv_to_rgb(color_list[0], color_s, color_v)
+    bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+    math.data.materials.append(colors[1 + (run*3)])
+    color_rgb = colorsys.hsv_to_rgb(color_list[1], color_s, color_v)
+    bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+    
+    effect = 4
+    #Extra effects
+    if round(effect) == 1:
+        #Particle system
+        bpy.context.active_object.name = 'math'
+        bpy.ops.object.convert(target='MESH')
+        standard_mesh(mesh_type)
+        
+        #Parameters derived from effect
+        scale_objects = mesh_length
+        number = 10 + ((effect - 0.5) * 1000)
+        
+        bpy.ops.transform.resize(value=(scale_objects, scale_objects, scale_objects), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.translate(value=(200, 0, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        cube = context.active_object
+        
+        #Color assignment
+        cube.data.materials.append(colors[2 + (run*3)])
+        color_rgb = colorsys.hsv_to_rgb(color_list[2], color_s, color_v)
+        bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+        #bpy.context.object.hide_viewport = True
+        
+        #Adding particle system
+        bpy.ops.object.select_all(action='DESELECT') # Deselect all objects
+        bpy.context.view_layer.objects.active = math   # Make the cube the active object 
+                
+        bpy.ops.object.particle_system_add()
+        bpy.context.object.particle_systems["ParticleSettings"].name = name_system[run*2]
+        bpy.data.particles["ParticleSettings"].name = name_system[run*2]
+        bpy.data.particles[name_system[run*2]].type = 'HAIR'
+        bpy.data.particles[name_system[run*2]].hair_length = 1.7
+        bpy.data.particles[name_system[run*2]].use_advanced_hair = True
+        bpy.data.particles[name_system[run*2]].render_type = 'OBJECT'
+        bpy.data.particles[name_system[run*2]].instance_object = cube
+        bpy.data.particles[name_system[run*2]].count = number    
+        bpy.data.particles[name_system[run*2]].factor_random = 0
+        bpy.data.particles[name_system[run*2]].use_rotations = True
+        bpy.data.particles[name_system[run*2]].phase_factor = random.random()
+        bpy.data.particles[name_system[run*2]].phase_factor_random = random.random() * 2
+    
+    if round(effect) == 20:
+        style = mesh_type/2
+        if style == 0:
+            bpy.ops.mesh.primitive_torus_add(align='WORLD', location=(0, 0, 0), rotation=(0, 0, 0), major_radius=1, minor_radius=0.25, abso_major_rad=1.25, abso_minor_rad=0.75) 
+        elif style == 1:
+            bpy.ops.mesh.primitive_uv_sphere_add(radius=1, enter_editmode=False, location=(0, 0, 0))
+        elif style == 2:
+            bpy.ops.mesh.primitive_cube_add(size=2, enter_editmode=False, location=(0, 0, 0))
+        else:
+            bpy.ops.mesh.primitive_cone_add(radius1=1, radius2=0, depth=2, enter_editmode=False, location=(0, 0, 0))
+        
+        for obj in bpy.context.selected_objects:
+            obj.name = "Tessellate"
+        Tessellate = context.active_object
+            
+        bpy.ops.object.tissue_tessellate(object_name="Tessellation", gen_modifiers=False, com_modifiers=False, generator="Shape", component="Tessellate")
+        bpy.ops.transform.translate(value=(location_x, location_y, 0), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.transform.resize(value=(8.16151, 8.16151, 8.16151), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        #bpy.data.objects['Tessellate'].select_set(False)
+        #bpy.data.objects['Shape'].select_set(True)
+        #bpy.ops.object.delete(use_global=False, confirm=False)
+
+
+    if round(effect) == 2:
+        #Displace modifier
+        pattern_index = mesh_length - 2
+        if pattern_index <= 0:
+            pattern_index = 0
+        pattern = pattern_list[int(pattern_index)]
+        displace(pattern, contrast, run)
+    if round(effect) == 3:
+        #Wireframe modifier
+        wireframe(thickness, mode)
+        math.data.materials.append(colors[0 + (run*3)])
+        color_rgb = colorsys.hsv_to_rgb(color_list[0], color_s, color_v)
+        bpy.context.object.active_material.diffuse_color = (color_rgb[0], color_rgb[1], color_rgb[2], color_a)
+    
+        
+    #add_rotation(run)
+
+
+
+
+
+
+
+
+
+
+######################################### Reading txt file #####################################################################################################
+
+######################################### Generate the shapes ##########################################################################################################################################################
+
+
+run = 0
+numbers = 0
+object_file = open("objectinfo.txt","r")
+file_list = object_file.readlines()
+for line in file_list:
+    line = line.split(",")
+    line.pop()
+    print(line)
+    location_x, location_y, location_z, parameter, mesh_type, mesh_size, mesh_length, mesh_length_y, segments, number, number2, color_scheme, color_variation, color_h, color_s, color_v, color_a = translate_information(line)
+    # add multiple functions here considering the objects to be spawned inside blender.
+    print(location_x, location_y, location_z, parameter, mesh_type, mesh_size, mesh_length, mesh_length_y, segments, number, number2, color_scheme, color_variation, color_h, color_s, color_v, color_a)
+    
+    #Check which modifier to run 
+    if 0 <= parameter <= 1:
+        #Mandala
+        mandala_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+        mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+        color_variation, color_h, color_s, color_v, color_a)          
+    if 1 < parameter <= 2:
+        #Fractal
+        fractal_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+        mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+        color_variation, color_h, color_s, color_v, color_a)
+    if 2 < parameter <= 3:
+        #Fur
+        fur_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+        mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+        color_variation, color_h, color_s, color_v, color_a)
+    if 4 < parameter <= 6:
+        #Math
+        math_builder(run, location_x, location_y, parameter, mesh_type, mesh_size, \
+        mesh_length, mesh_length_y, segments, number, number2, color_scheme, \
+        color_variation, color_h, color_s, color_v, color_a)
+    else:
+        print(parameter)
+        
+    run += 1
+
+
+
+
+
+######################################## Setting up scene ##############################################################
+
+
+#Add numbers
+bpy.ops.object.text_add(enter_editmode=False, location=(-37, 13, 0))
+bpy.data.objects["Text"].data.body = "1"
+bpy.ops.transform.resize(value=(6.70121, 6.70121, 6.70121), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+bpy.ops.object.text_add(enter_editmode=False, location=(33, 13, 0))
+bpy.data.objects["Text.001"].data.body = "2"
+bpy.ops.transform.resize(value=(6.70121, 6.70121, 6.70121), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+bpy.ops.object.text_add(enter_editmode=False, location=(-37, -17, 0))
+bpy.data.objects["Text.002"].data.body = "3"
+bpy.ops.transform.resize(value=(6.70121, 6.70121, 6.70121), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+bpy.ops.object.text_add(enter_editmode=False, location=(33, -17, 0))
+bpy.data.objects["Text.003"].data.body = "4"
+bpy.ops.transform.resize(value=(6.70121, 6.70121, 6.70121), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+def set_environment(lamps):
+    #Add lights
+    bpy.ops.object.light_add(type='SUN', location=(0, 0, 10))
+    bpy.context.object.data.energy = 1
+
+
+    bpy.ops.object.light_add(type='AREA', radius=10, location=(-15, 15, 10))
+    bpy.context.object.data.energy = 1000
+    bpy.ops.transform.resize(value=(3.00948, 3.00948, 3.00948), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+    bpy.ops.object.light_add(type='AREA', radius=10, location=(15, 15, 10))
+    bpy.context.object.data.energy = 1000
+    bpy.ops.transform.resize(value=(3.00948, 3.00948, 3.00948), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+    bpy.ops.object.light_add(type='AREA', radius=10, location=(15, -15, 10))
+    bpy.context.object.data.energy = 1000
+    bpy.ops.transform.resize(value=(3.00948, 3.00948, 3.00948), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+    bpy.ops.object.light_add(type='AREA', radius=10, location=(-15, -15, 10))
+    bpy.context.object.data.energy = 1000
+    bpy.ops.transform.resize(value=(3.00948, 3.00948, 3.00948), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+    #bpy.ops.mesh.primitive_plane_add(enter_editmode=False, location=(0, 0, -5))
+    #bpy.ops.transform.resize(value=(100, 100, 100), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+
+set_environment(5)
+#Deselect everything
+bpy.ops.object.select_all(action='DESELECT')
+
+
+object_file.close()
