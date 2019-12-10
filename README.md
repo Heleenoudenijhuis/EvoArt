@@ -7,3 +7,4 @@ Basic scripts for:
 - creating shapes
 - creating fractal trees in blender
 - creating polygons with different angle sharpness
+- evolutionary art in combination with mutation/cross-over files in Pycharm
